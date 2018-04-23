@@ -1,6 +1,10 @@
 package com.su.botanywarzombies.view;
 
+import com.su.botanywarzombies.R;
+
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,18 +16,23 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 
     public static final String TAG = GameView.class.getSimpleName();
 
+    private int startY = 50;
+    private int endY = 50;
+    
     private boolean gameRunFlag;
 
+    private Context mContext;
+    private Bitmap mIcon;
     // 绘图画笔
     private Paint mPaint;
     // 绘图画布
     private Canvas mCanvas;
-
     private SurfaceHolder mSurfaceHolder;
 
     public GameView(Context context) {
         super(context);
-
+        this.mContext = context;
+        
         gameRunFlag = true;
         mPaint = new Paint();
         mSurfaceHolder = getHolder();
@@ -34,6 +43,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     @Override
     public void surfaceCreated(SurfaceHolder arg0) {
         Log.d(TAG, "surfaceCreated");
+        mIcon = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_launcher);
+        
+        
         new Thread(this).start();
     }
 
@@ -54,16 +66,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
             // 这里需要考虑线程同步
             synchronized (mSurfaceHolder) {
                 try {
-
                     // 锁住画布才能绘图
                     mCanvas = mSurfaceHolder.lockCanvas();
+                    
+                    // 清屏
+                    mCanvas.drawRect(0, 0, 480, 320, mPaint);
 
                     int color = mPaint.getColor();
                     mPaint.setColor(Color.RED);
 
-                    mCanvas.drawRect(50, 50, 100, 100, mPaint);
+                    mCanvas.drawBitmap(mIcon, 100, 100, mPaint);
+                    mCanvas.drawRect(50, startY, 100, 100, mPaint);
                     // 好习惯画笔复位
                     mPaint.setColor(color);
+                    
+                    startY ++;
+                    endY ++;
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
