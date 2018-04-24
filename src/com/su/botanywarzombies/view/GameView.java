@@ -69,7 +69,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
                 }
 
                 try {
-                    // 视频达到24帧，1秒24帧图片，肉眼是感受不到变化
                     Thread.sleep(60);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
