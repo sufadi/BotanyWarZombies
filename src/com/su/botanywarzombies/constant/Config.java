@@ -1,9 +1,23 @@
 package com.su.botanywarzombies.constant;
 
+import android.graphics.Bitmap;
+
 public class Config {
 
-    public static final float scaleWidth = 100;
+    // Ëõ·Å±È
+    public static float scaleWidth;
+
+    public static float scaleHeight;
+
     
-    public static final float scaleHeight = 100;
+
+    // ÆÁÄ»¿í¸ß
+    public static int screenWidth;
+
+    public static int screenHeight;
     
+    // Í¼Æ¬±³¾°
+    public static Bitmap gameBg;
+    
+    public static Bitmap seekBank;
 }

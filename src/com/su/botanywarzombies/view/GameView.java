@@ -1,28 +1,21 @@
 package com.su.botanywarzombies.view;
 
-import com.su.botanywarzombies.R;
-
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.su.botanywarzombies.constant.Config;
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, Runnable {
 
     public static final String TAG = GameView.class.getSimpleName();
 
-    private int startY = 50;
-    private int endY = 50;
-    
     private boolean gameRunFlag;
 
     private Context mContext;
-    private Bitmap mIcon;
     // 绘图画笔
     private Paint mPaint;
     // 绘图画布
@@ -32,7 +25,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     public GameView(Context context) {
         super(context);
         this.mContext = context;
-        
+
         gameRunFlag = true;
         mPaint = new Paint();
         mSurfaceHolder = getHolder();
@@ -43,9 +36,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     @Override
     public void surfaceCreated(SurfaceHolder arg0) {
         Log.d(TAG, "surfaceCreated");
-        mIcon = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_launcher);
-        
-        
         new Thread(this).start();
     }
 
@@ -68,20 +58,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
                 try {
                     // 锁住画布才能绘图
                     mCanvas = mSurfaceHolder.lockCanvas();
-                    
-                    // 清屏
-                    mCanvas.drawRect(0, 0, 480, 320, mPaint);
-
-                    int color = mPaint.getColor();
-                    mPaint.setColor(Color.RED);
-
-                    mCanvas.drawBitmap(mIcon, 100, 100, mPaint);
-                    mCanvas.drawRect(50, startY, 100, 100, mPaint);
-                    // 好习惯画笔复位
-                    mPaint.setColor(color);
-                    
-                    startY ++;
-                    endY ++;
+                    mCanvas.drawBitmap(Config.gameBg, 0, 0, mPaint);
+                    // 放置卡片的起始 X 坐标是 (界面宽度-卡片宽度) / 2
+                    mCanvas.drawBitmap(Config.seekBank, (Config.screenWidth - Config.seekBank.getWidth()) /2 , 0, mPaint);
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -99,5 +78,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 
             }
         }
+    }
+
+    private void updateData() {
+
+    }
+
+    private void onDrawing(Canvas mCanvas) {
+
     }
 }

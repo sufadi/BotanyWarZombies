@@ -38,6 +38,7 @@ public class DeviceTools {
             int height = bitmap.getHeight();
             int newWidth = w;
             int newHeight = h;
+            // Àı∑≈±»
             float scaleWidth = ((float) newWidth) / width;
             float scaleHeight = ((float) newHeight) / height;
             // Õº∆¨æÿ’Û
