@@ -1,119 +1,155 @@
-### 1.背景图层布置效果
+### 1.放置太阳花和豌豆射手卡片
 
-该图层主要是2张图片过程，草地和放置卡片的状态图层过程，属于静态图片范畴
+![豌豆射手和太阳花](https://img-blog.csdn.net/20180425231427646?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1NzQ5NTIw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
-![背景图片](https://img-blog.csdn.net/20180424223545697?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1NzQ5NTIw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+### 2.基本思路
 
-### 2. 背景图片的屏幕适配
+- 太阳花卡片的起始X位置 = 根据状态栏的X坐标 + 1个图片宽度
+- 太阳花卡片的起始X位置 = 根据状态栏的X坐标 + 2个图片宽度
 
-这里主要根据图片的缩放比对原始图片进行重新绘制，达到适配屏幕的效果
-
-- 缩放比宽 = 屏幕界面宽 / 图片本身宽
-- 缩放比高 = 屏幕界面高 / 图片本身高
 
 ```
-    private void initValue() {
-        int[] mDeviceInfo = DeviceTools.getDeviceInfo(this);
-        Config.screenWidth = mDeviceInfo[0];
-        Config.screenHeight = mDeviceInfo[0];
+        // 状态栏位置 + 一张图片宽度
+        int statusX = (Config.screenWidth - Config.seekBank.getWidth()) / 2;
+        int locationX = statusX + Config.seedFlower.getWidth();
+        SeedFlower seedFlower = new SeedFlower(locationX, 0);
+        gameLayout2.add(seedFlower);
 
-        Config.gameBg = BitmapFactory.decodeResource(getResources(), R.drawable.bk);
-        Config.scaleWidth = Config.screenWidth / (float) Config.gameBg.getWidth();
-        Config.scaleHeight = Config.screenHeight / (float) Config.gameBg.getHeight();
+        // 豌豆射手
+        locationX = locationX + Config.seedPea.getWidth();
+        SeedPea seedPea = new SeedPea(locationX, 0);
+        gameLayout2.add(seedPea);
+```
 
-        // 获取新的适配手机屏幕的背景图片
-        Config.gameBg = DeviceTools.resizeBitmap(Config.gameBg);
+### 3.开发细节
+##### 3.1 卡片对象-基类
 
-        Config.seekBank = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.seedbank));
+```
+package com.su.botanywarzombies.model;
 
-        mGameView = new GameView(this);
+import android.graphics.Canvas;
+import android.graphics.Paint;
+
+public class BaseModel {
+
+    // 对象的起始X坐标
+    public int locationX;
+
+    // 对象的起始 Y坐标
+    public int locationY;
+
+    // 是否还活着
+    public boolean isLive;
+
+    // 位置的自我绘制
+    public void drawSelf(Canvas canvas, Paint paint) {
+
     }
-```
-
-屏幕宽高获取方法如下
+}
 
 
 ```
-/**
-     * 获取屏幕大小
-     * 
-     * @param context
-     * @return
-     */
-    public static int[] getDeviceInfo(Context context) {
-        if ((deviceWidthHeight[0] == 0) && (deviceWidthHeight[1] == 0)) {
-            DisplayMetrics metrics = new DisplayMetrics();
-            ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+##### 3.1 卡片对象-接口类
 
-            deviceWidthHeight[0] = metrics.widthPixels;
-            deviceWidthHeight[1] = metrics.heightPixels;
-        }
-        return deviceWidthHeight;
+```
+package com.su.botanywarzombies.model;
+
+public interface TouchAble {
+    void onTouch();
+}
+
+```
+
+
+
+##### 3.2 太阳花卡片对象
+
+继承基类并实现接口
+
+```
+package com.su.botanywarzombies.entity;
+
+import android.graphics.Canvas;
+import android.graphics.Paint;
+
+import com.su.botanywarzombies.constant.Config;
+import com.su.botanywarzombies.model.BaseModel;
+import com.su.botanywarzombies.model.TouchAble;
+
+public class SeedFlower extends BaseModel implements TouchAble {
+
+    public SeedFlower(int locationX, int locationY) {
+        this.locationX = locationX;
+        this.locationY = locationY;
+        this.isLive = true;
     }
-```
-
-根据缩放比重新绘制图片的方法如下
-
-
-```
-public static Bitmap resizeBitmap(Bitmap bitmap, int w, int h) {
-        if (bitmap != null) {
-            int width = bitmap.getWidth();
-            int height = bitmap.getHeight();
-            int newWidth = w;
-            int newHeight = h;
-            // 缩放比
-            float scaleWidth = ((float) newWidth) / width;
-            float scaleHeight = ((float) newHeight) / height;
-            // 图片矩阵
-            Matrix matrix = new Matrix();
-            matrix.postScale(scaleWidth, scaleHeight);
-            Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
-            return resizedBitmap;
-        } else {
-            return null;
-        }
-    }
-```
-
-### 3. 背景图片绘制到sufaceView中
-
-其中 放置卡片的起始 X 坐标是 (界面宽度-卡片宽度) / 2
-
-```
-public class GameView extends SurfaceView implements SurfaceHolder.Callback, Runnable {
 
     @Override
-    public void run() {
-        while (gameRunFlag) {
-            // 这里需要考虑线程同步
-            synchronized (mSurfaceHolder) {
-                try {
-                    // 锁住画布才能绘图
-                    mCanvas = mSurfaceHolder.lockCanvas();
-                    mCanvas.drawBitmap(Config.gameBg, 0, 0, mPaint);
-                    // 放置卡片的起始 X 坐标是 (界面宽度-卡片宽度) / 2
-                    mCanvas.drawBitmap(Config.seekBank, (Config.screenWidth - Config.seekBank.getWidth()) /2 , 0, mPaint);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    // 解锁并提交
-                    mSurfaceHolder.unlockCanvasAndPost(mCanvas);
-                }
-
-                try {
-                    Thread.sleep(60);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-            }
+    public void drawSelf(Canvas canvas, Paint paint) {
+        if (isLive) {
+            canvas.drawBitmap(Config.seedFlower, locationX, locationY, paint);
         }
     }
+
+    @Override
+    public void onTouch() {
+
+    }
+
+}
+
 ```
 
-### 4. 完整 Demo 下载地址
+
+##### 3.2 豌豆射手卡片对象
+
+
+```
+package com.su.botanywarzombies.entity;
+
+import android.graphics.Canvas;
+import android.graphics.Paint;
+
+import com.su.botanywarzombies.constant.Config;
+import com.su.botanywarzombies.model.BaseModel;
+import com.su.botanywarzombies.model.TouchAble;
+
+public class SeedPea extends BaseModel implements TouchAble {
+
+    public SeedPea(int locationX, int locationY) {
+        this.locationX = locationX;
+        this.locationY = locationY;
+        this.isLive = true;
+    }
+
+    @Override
+    public void drawSelf(Canvas canvas, Paint paint) {
+        if (isLive) {
+            canvas.drawBitmap(Config.seedPea, locationX, locationY, paint);
+        }
+    }
+
+    @Override
+    public void onTouch() {
+
+    }
+
+}
+
+```
+
+##### 3.3 卡片对象的图片加载，这里需要指定宽高
+
+除以 6 是宽度的估算
+
+```
+        int seedPicWidth = Config.seekBank.getWidth() / 6;
+        int seedPicHeight = Config.seekBank.getHeight();
+        Config.seedFlower = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.seed_flower), seedPicWidth, seedPicHeight);
+        Config.seedPea = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.seed_pea), seedPicWidth, seedPicHeight);
+```
+
+### 4.demo 下载
 
 https://github.com/sufadi/BotanyWarZombies
 
