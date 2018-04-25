@@ -37,8 +37,12 @@ public class MainActivity extends Activity {
 
         // 获取新的适配手机屏幕的背景图片
         Config.gameBg = DeviceTools.resizeBitmap(Config.gameBg);
-
         Config.seekBank = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.seedbank));
+
+        int seedPicWidth = Config.seekBank.getWidth() / 6;
+        int seedPicHeight = Config.seekBank.getHeight();
+        Config.seedFlower = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.seed_flower), seedPicWidth, seedPicHeight);
+        Config.seedPea = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.seed_pea), seedPicWidth, seedPicHeight);
 
         mGameView = new GameView(this);
     }

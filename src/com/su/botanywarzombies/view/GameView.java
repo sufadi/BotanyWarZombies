@@ -1,5 +1,7 @@
 package com.su.botanywarzombies.view;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -8,6 +10,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.su.botanywarzombies.constant.Config;
+import com.su.botanywarzombies.entity.SeedFlower;
+import com.su.botanywarzombies.entity.SeedPea;
+import com.su.botanywarzombies.model.BaseModel;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, Runnable {
 
@@ -22,6 +27,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private Canvas mCanvas;
     private SurfaceHolder mSurfaceHolder;
 
+    // 第二层图层的集合
+    private ArrayList<BaseModel> gameLayout2;
+
     public GameView(Context context) {
         super(context);
         this.mContext = context;
@@ -35,8 +43,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 
     @Override
     public void surfaceCreated(SurfaceHolder arg0) {
+        creatElement();
+
         Log.d(TAG, "surfaceCreated");
         new Thread(this).start();
+    }
+
+    private void creatElement() {
+        gameLayout2 = new ArrayList<BaseModel>();
+
+        // 状态栏位置 + 一张图片宽度
+        int statusX = (Config.screenWidth - Config.seekBank.getWidth()) / 2;
+        int locationX = statusX + Config.seedFlower.getWidth();
+        SeedFlower seedFlower = new SeedFlower(locationX, 0);
+        gameLayout2.add(seedFlower);
+
+        // 豌豆射手
+        locationX = locationX + Config.seedPea.getWidth();
+        SeedPea seedPea = new SeedPea(locationX, 0);
+        gameLayout2.add(seedPea);
+
     }
 
     @Override
@@ -60,7 +86,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
                     mCanvas = mSurfaceHolder.lockCanvas();
                     mCanvas.drawBitmap(Config.gameBg, 0, 0, mPaint);
                     // 放置卡片的起始 X 坐标是 (界面宽度-卡片宽度) / 2
-                    mCanvas.drawBitmap(Config.seekBank, (Config.screenWidth - Config.seekBank.getWidth()) /2 , 0, mPaint);
+                    mCanvas.drawBitmap(Config.seekBank, (Config.screenWidth - Config.seekBank.getWidth()) / 2, 0, mPaint);
+
+                    onDrawing(mCanvas);
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -84,6 +112,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     }
 
     private void onDrawing(Canvas mCanvas) {
-
+        for (BaseModel model : gameLayout2) {
+            model.drawSelf(mCanvas, mPaint);
+        }
     }
 }
