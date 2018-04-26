@@ -6,13 +6,16 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.su.botanywarzombies.constant.Config;
+import com.su.botanywarzombies.entity.EmplacePea;
 import com.su.botanywarzombies.entity.SeedFlower;
 import com.su.botanywarzombies.entity.SeedPea;
 import com.su.botanywarzombies.model.BaseModel;
+import com.su.botanywarzombies.model.TouchAble;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, Runnable {
 
@@ -27,12 +30,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private Canvas mCanvas;
     private SurfaceHolder mSurfaceHolder;
 
+    private static GameView gameView;
+
+    // 第一层图层
+    private ArrayList<BaseModel> gameLayout1;
     // 第二层图层的集合
     private ArrayList<BaseModel> gameLayout2;
 
     public GameView(Context context) {
         super(context);
         this.mContext = context;
+        gameView = this;
 
         gameRunFlag = true;
         mPaint = new Paint();
@@ -114,6 +122,30 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private void onDrawing(Canvas mCanvas) {
         for (BaseModel model : gameLayout2) {
             model.drawSelf(mCanvas, mPaint);
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        for (BaseModel model : gameLayout2) {
+            if (model instanceof TouchAble) {
+                if (((TouchAble) model).onTouch(event)) {
+                    // true 表示触摸事件到此为止不再响应
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static GameView getInstance() {
+        return gameView;
+    }
+
+    public void applyEmplacePea(int locationX, int locationY) {
+        synchronized (mSurfaceHolder) {
+            gameLayout1.add(new EmplacePea(locationX, locationY));
         }
     }
 }

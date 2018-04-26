@@ -25,4 +25,10 @@ public class Config {
 
     // 豌豆射手
     public static Bitmap seedPea;
+
+    // 花的图片数组
+    public static Bitmap[] flowerFlames = new Bitmap[8];
+    // 豌豆射手的图片数组
+    public static Bitmap[] peaFlames = new Bitmap[8];
+
 }
