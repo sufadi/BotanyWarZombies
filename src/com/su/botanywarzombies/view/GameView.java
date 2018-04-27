@@ -59,6 +59,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 
     private void creatElement() {
         gameLayout2 = new ArrayList<BaseModel>();
+        gameLayout1 = new ArrayList<BaseModel>();
 
         // 状态栏位置 + 一张图片宽度
         int statusX = (Config.screenWidth - Config.seekBank.getWidth()) / 2;
@@ -97,20 +98,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
                     mCanvas.drawBitmap(Config.seekBank, (Config.screenWidth - Config.seekBank.getWidth()) / 2, 0, mPaint);
 
                     onDrawing(mCanvas);
+
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    // e.printStackTrace();
                 } finally {
                     // 解锁并提交
                     mSurfaceHolder.unlockCanvasAndPost(mCanvas);
                 }
 
-                try {
-                    Thread.sleep(60);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+            }
 
+            try {
+                Thread.sleep(60);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
     }
@@ -123,10 +125,27 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
         for (BaseModel model : gameLayout2) {
             model.drawSelf(mCanvas, mPaint);
         }
+
+        // 后画的会覆盖先画的，故位置在gameLayout2下面
+        if (gameLayout1 != null && !gameLayout1.isEmpty()) {
+            for (BaseModel model : gameLayout1) {
+                model.drawSelf(mCanvas, mPaint);
+            }
+        }
+
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        for (BaseModel model : gameLayout1) {
+            if (model instanceof TouchAble) {
+                if (((TouchAble) model).onTouch(event)) {
+                    // true 表示触摸事件到此为止不再响应
+                    return true;
+                }
+            }
+        }
+
         for (BaseModel model : gameLayout2) {
             if (model instanceof TouchAble) {
                 if (((TouchAble) model).onTouch(event)) {
@@ -145,6 +164,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 
     public void applyEmplacePea(int locationX, int locationY) {
         synchronized (mSurfaceHolder) {
+            // 顶层加入被安放状态的植物
+            Log.d("sufadi", "applyEmplacePea add EmplacePea");
+
             gameLayout1.add(new EmplacePea(locationX, locationY));
         }
     }

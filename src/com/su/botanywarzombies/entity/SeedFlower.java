@@ -34,6 +34,7 @@ public class SeedFlower extends BaseModel implements TouchAble {
         int x = (int) event.getX();
         int y = (int) event.getY();
 
+        // x,y坐标是否在触摸区域
         if (touchArea.contains(x, y)) {
             Log.d("sufadi", "touch seed flower");
             return true;

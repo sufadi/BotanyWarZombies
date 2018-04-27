@@ -22,7 +22,7 @@ public class EmplacePea extends BaseModel implements TouchAble {
         this.locationX = locationX;
         this.locationY = locationY;
         this.isLive = true;
-        touchArea = new Rect(locationX, locationY, locationX + Config.peaFlames[1].getWidth(), locationY + Config.peaFlames[1].getHeight());
+        touchArea = new Rect(locationX, locationY, locationX + Config.peaFlames[0].getWidth(), locationY + Config.peaFlames[0].getHeight());
     }
 
     @Override
@@ -43,8 +43,12 @@ public class EmplacePea extends BaseModel implements TouchAble {
 
                 break;
             case MotionEvent.ACTION_MOVE:
-                locationX = x;
-                locationY = y;
+                // 卡片位置更新
+                locationX = x - Config.peaFlames[0].getWidth() / 2;
+                locationY = y - Config.peaFlames[0].getHeight() / 2;
+
+                // 触摸点跟随，重新移到新的位置
+                touchArea.offsetTo(locationX, locationY);
                 break;
             case MotionEvent.ACTION_UP:
 

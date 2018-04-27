@@ -36,17 +36,24 @@ public class SeedPea extends BaseModel implements TouchAble {
         int x = (int) event.getX();
         int y = (int) event.getY();
 
-        if (touchArea.contains(x, y)) {
-            Log.d("sufadi", "touch seed pea");
-            applyEmplacePea();
-            return true;
+        switch (event.getAction()) {
+        case MotionEvent.ACTION_DOWN:
+            if (touchArea.contains(x, y)) {
+                Log.d("sufadi", "touch seed pea");
+                applyEmplacePea();
+                return true;
+            }
+
+        default:
+            break;
         }
 
         return false;
     }
 
-    // 安放操作
+    // 请求安放一个卡片
     private void applyEmplacePea() {
+        // 向 GameView图层加
         GameView.getInstance().applyEmplacePea(locationX, locationY);
     }
 
