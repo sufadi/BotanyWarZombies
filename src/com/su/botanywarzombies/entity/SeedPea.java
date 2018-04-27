@@ -38,6 +38,7 @@ public class SeedPea extends BaseModel implements TouchAble {
 
         switch (event.getAction()) {
         case MotionEvent.ACTION_DOWN:
+            // 判断是否点击了卡片，根据是否焦点在触摸区域范围内
             if (touchArea.contains(x, y)) {
                 Log.d("sufadi", "touch seed pea");
                 applyEmplacePea();

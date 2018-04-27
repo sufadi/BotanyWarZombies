@@ -137,6 +137,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // 第一图层，背景图和放置状态栏的卡片
         for (BaseModel model : gameLayout1) {
             if (model instanceof TouchAble) {
                 if (((TouchAble) model).onTouch(event)) {
@@ -146,6 +147,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
             }
         }
 
+        // 第二图层，安放卡片
         for (BaseModel model : gameLayout2) {
             if (model instanceof TouchAble) {
                 if (((TouchAble) model).onTouch(event)) {

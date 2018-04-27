@@ -61,8 +61,4 @@ public class EmplacePea extends BaseModel implements TouchAble {
         return false;
     }
 
-    private void applyEmplacePea() {
-        GameView.getInstance().applyEmplacePea(locationX, locationY);
-    }
-
 }
