@@ -3,7 +3,7 @@ package com.su.botanywarzombies.model;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class BaseModel {
+public class BaseModel implements Plant{
 
     // 对象的起始X坐标
     public int locationX;
@@ -17,5 +17,10 @@ public class BaseModel {
     // 位置的自我绘制
     public void drawSelf(Canvas canvas, Paint paint) {
 
+    }
+
+    @Override
+    public int getMapIndex() {
+        return 0;
     }
 }

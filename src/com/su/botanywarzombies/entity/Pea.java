@@ -33,4 +33,9 @@ public class Pea extends BaseModel {
             farmeIndex = (++farmeIndex) % 8;
         }
     }
+    
+    @Override
+    public int getMapIndex() {
+        return mapIndex;
+    }
 }

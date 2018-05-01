@@ -17,6 +17,7 @@ import com.su.botanywarzombies.entity.Pea;
 import com.su.botanywarzombies.entity.SeedFlower;
 import com.su.botanywarzombies.entity.SeedPea;
 import com.su.botanywarzombies.model.BaseModel;
+import com.su.botanywarzombies.model.Plant;
 import com.su.botanywarzombies.model.TouchAble;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, Runnable {
@@ -190,6 +191,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     }
 
     private void onDrawing(Canvas mCanvas) {
+
         for (BaseModel model : gameLayout4plant0) {
             model.drawSelf(mCanvas, mPaint);
         }
@@ -315,25 +317,30 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private boolean isExist(int key, int raceIndex) {
         switch (raceIndex) {
         case 0:
-            for (BaseModel model : gameLayout4plant0) {
-                
-            }
-            break;
+            return hasMapIndex(key, gameLayout4plant0);
         case 1:
-            
-            break;
+            return hasMapIndex(key, gameLayout4plant1);
         case 2:
-            
-            break;
+            return hasMapIndex(key, gameLayout4plant2);
         case 3:
-            
-            break;
+            return hasMapIndex(key, gameLayout4plant3);
         case 4:
-            
-            break;
+            return hasMapIndex(key, gameLayout4plant4);
         default:
             break;
         }
+        return false;
+    }
+
+    private boolean hasMapIndex(int key, ArrayList<BaseModel> list) {
+        for (BaseModel model : list) {
+            if (model instanceof Plant) {
+                if (key == model.getMapIndex()) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 }
