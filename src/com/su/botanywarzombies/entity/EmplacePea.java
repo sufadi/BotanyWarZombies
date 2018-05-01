@@ -43,7 +43,7 @@ public class EmplacePea extends BaseModel implements TouchAble {
 
                 break;
             case MotionEvent.ACTION_MOVE:
-                // 卡片位置更新
+                // 卡片位置更新,这里是卡片原点的变化，故是中心点(locationX, locationY)的变化
                 locationX = x - Config.peaFlames[0].getWidth() / 2;
                 locationY = y - Config.peaFlames[0].getHeight() / 2;
 
@@ -51,7 +51,10 @@ public class EmplacePea extends BaseModel implements TouchAble {
                 touchArea.offsetTo(locationX, locationY);
                 break;
             case MotionEvent.ACTION_UP:
-
+                // 对象标志位失效，即死亡对象
+                isLive = false;
+                
+                GameView.getInstance().applay4Plant(locationX, locationY, this);
                 break;
             default:
                 break;

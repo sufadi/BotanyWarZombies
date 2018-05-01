@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
     private void initValue() {
         int[] mDeviceInfo = DeviceTools.getDeviceInfo(this);
         Config.screenWidth = mDeviceInfo[0];
-        Config.screenHeight = mDeviceInfo[0];
+        Config.screenHeight = mDeviceInfo[1];
 
         Config.gameBg = BitmapFactory.decodeResource(getResources(), R.drawable.bk);
         Config.scaleWidth = Config.screenWidth / (float) Config.gameBg.getWidth();

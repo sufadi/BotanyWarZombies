@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -12,6 +13,7 @@ import android.view.SurfaceView;
 
 import com.su.botanywarzombies.constant.Config;
 import com.su.botanywarzombies.entity.EmplacePea;
+import com.su.botanywarzombies.entity.Pea;
 import com.su.botanywarzombies.entity.SeedFlower;
 import com.su.botanywarzombies.entity.SeedPea;
 import com.su.botanywarzombies.model.BaseModel;
@@ -32,10 +34,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 
     private static GameView gameView;
 
+    // 放置死亡集合
+    private ArrayList<BaseModel> deadList;
+
     // 第一层图层
     private ArrayList<BaseModel> gameLayout1;
     // 第二层图层的集合
     private ArrayList<BaseModel> gameLayout2;
+
+    // 安放植物 跑道1
+    private ArrayList<BaseModel> gameLayout4plant0;
+    // 安放植物 跑道2
+    private ArrayList<BaseModel> gameLayout4plant1;
+    // 安放植物 跑道3
+    private ArrayList<BaseModel> gameLayout4plant2;
+    // 安放植物 跑道4
+    private ArrayList<BaseModel> gameLayout4plant3;
+    // 安放植物 跑道5
+    private ArrayList<BaseModel> gameLayout4plant4;
 
     public GameView(Context context) {
         super(context);
@@ -58,8 +74,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     }
 
     private void creatElement() {
+        deadList = new ArrayList<BaseModel>();
         gameLayout2 = new ArrayList<BaseModel>();
         gameLayout1 = new ArrayList<BaseModel>();
+
+        gameLayout4plant0 = new ArrayList<BaseModel>();
+        gameLayout4plant1 = new ArrayList<BaseModel>();
+        gameLayout4plant2 = new ArrayList<BaseModel>();
+        gameLayout4plant3 = new ArrayList<BaseModel>();
+        gameLayout4plant4 = new ArrayList<BaseModel>();
 
         // 状态栏位置 + 一张图片宽度
         int statusX = (Config.screenWidth - Config.seekBank.getWidth()) / 2;
@@ -72,6 +95,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
         SeedPea seedPea = new SeedPea(locationX, 0);
         gameLayout2.add(seedPea);
 
+        // 初始化可安放卡片的所有有效区域
+        final int LINE = 5;
+        final int ROW = 9;
+        final int TOTAL_ROW = 11;
+        final int TOTAL_LINE = 6;
+        for (int i = 0; i < LINE; i++) {
+            for (int j = 0; j < ROW; j++) {
+                int x = (j + 2) * Config.screenWidth / TOTAL_ROW - Config.screenWidth / TOTAL_ROW / 2;
+                int y = (i + 1) * Config.screenHeight / TOTAL_LINE;
+                Point mPoint = new Point(x, y);
+
+                Config.plantPoint.put(i * (ROW + 1) + j, mPoint);
+
+                if (j == 0) {
+                    // 记录每一个可安放区域的跑道Y坐标
+                    Config.racWayYpoint[i] = (i + 1) * Config.screenHeight / TOTAL_LINE;
+                }
+            }
+
+        }
     }
 
     @Override
@@ -97,6 +140,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
                     // 放置卡片的起始 X 坐标是 (界面宽度-卡片宽度) / 2
                     mCanvas.drawBitmap(Config.seekBank, (Config.screenWidth - Config.seekBank.getWidth()) / 2, 0, mPaint);
 
+                    updateData();
                     onDrawing(mCanvas);
 
                 } catch (Exception e) {
@@ -118,10 +162,54 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     }
 
     private void updateData() {
+        deadList.clear();
+
+        for (BaseModel model : gameLayout1) {
+            if (!model.isLive) {
+                // 放置死亡的对象
+                deadList.add(model);
+            }
+        }
+
+        for (BaseModel model : gameLayout2) {
+            if (!model.isLive) {
+                // 放置死亡的对象
+                deadList.add(model);
+            }
+        }
+
+        // 松开鼠标，无效对象消失
+        for (BaseModel model : deadList) {
+            if (!model.isLive) {
+                // 放置死亡的对象
+                gameLayout1.remove(model);
+                gameLayout1.remove(model);
+            }
+        }
 
     }
 
     private void onDrawing(Canvas mCanvas) {
+        for (BaseModel model : gameLayout4plant0) {
+            model.drawSelf(mCanvas, mPaint);
+        }
+
+        for (BaseModel model : gameLayout4plant1) {
+            model.drawSelf(mCanvas, mPaint);
+        }
+
+        for (BaseModel model : gameLayout4plant2) {
+            model.drawSelf(mCanvas, mPaint);
+        }
+
+        for (BaseModel model : gameLayout4plant3) {
+            model.drawSelf(mCanvas, mPaint);
+        }
+
+        for (BaseModel model : gameLayout4plant4) {
+            model.drawSelf(mCanvas, mPaint);
+        }
+
         for (BaseModel model : gameLayout2) {
             model.drawSelf(mCanvas, mPaint);
         }
@@ -166,10 +254,86 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 
     public void applyEmplacePea(int locationX, int locationY) {
         synchronized (mSurfaceHolder) {
+            if (gameRunFlag) {
+
+            }
             // 顶层加入被安放状态的植物
             Log.d("sufadi", "applyEmplacePea add EmplacePea");
 
             gameLayout1.add(new EmplacePea(locationX, locationY));
         }
+    }
+
+    public void applay4Plant(int locationX, int locationY, EmplacePea emplacePea) {
+        synchronized (mSurfaceHolder) {
+            // 当前卡片中心坐标与可安放集合最近的坐标点
+            for (Integer key : Config.plantPoint.keySet()) {
+                // 1. 两个卡片中心点距离是一个单元格宽度，这里我们取两个卡片直接画中心线
+                // 2. 可放置卡片偏向那，自动放置哪里
+                final int TOTAL_ROW = 11;
+                final int TOTAL_LINE = 6;
+                Point point = Config.plantPoint.get(key);
+                if ((Math.abs(locationX - point.x) < Config.screenWidth / TOTAL_ROW / 2) && (Math.abs(locationY - point.y) < Config.screenHeight / TOTAL_LINE / 2)) {
+                    int raceIndex = TOTAL_LINE;
+
+                    for (int i = 0; i < Config.racWayYpoint.length; i++) {
+                        if (point.y == Config.racWayYpoint[i]) {
+                            raceIndex = i;
+                        }
+                    }
+
+                    if (isExist(key, raceIndex)) {
+                        return;
+                    }
+
+                    switch (raceIndex) {
+                    case 0:
+                        gameLayout4plant0.add(new Pea(point.x, point.y, key));
+                        break;
+                    case 1:
+                        gameLayout4plant1.add(new Pea(point.x, point.y, key));
+                        break;
+                    case 2:
+                        gameLayout4plant2.add(new Pea(point.x, point.y, key));
+                        break;
+                    case 3:
+                        gameLayout4plant3.add(new Pea(point.x, point.y, key));
+                        break;
+                    case 4:
+                        gameLayout4plant4.add(new Pea(point.x, point.y, key));
+                        break;
+
+                    default:
+                        break;
+                    }
+                }
+            }
+        }
+
+    }
+
+    private boolean isExist(int key, int raceIndex) {
+        switch (raceIndex) {
+        case 0:
+            for (BaseModel model : gameLayout4plant0) {
+                
+            }
+            break;
+        case 1:
+            
+            break;
+        case 2:
+            
+            break;
+        case 3:
+            
+            break;
+        case 4:
+            
+            break;
+        default:
+            break;
+        }
+        return false;
     }
 }
