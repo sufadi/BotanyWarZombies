@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import com.su.botanywarzombies.constant.Config;
 import com.su.botanywarzombies.model.BaseModel;
 import com.su.botanywarzombies.model.TouchAble;
+import com.su.botanywarzombies.view.GameView;
 
 public class SeedFlower extends BaseModel implements TouchAble {
 
@@ -37,10 +38,16 @@ public class SeedFlower extends BaseModel implements TouchAble {
         // x,y坐标是否在触摸区域
         if (touchArea.contains(x, y)) {
             Log.d("sufadi", "touch seed flower");
+            apply4EmplaceFlower();
             return true;
         }
 
         return false;
+    }
+
+    private void apply4EmplaceFlower() {
+        GameView.getInstance().applyEmplacePlant(locationX, locationY, this);
+
     }
 
 }

@@ -3,7 +3,7 @@ package com.su.botanywarzombies.model;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class BaseModel implements Plant{
+public class BaseModel implements Plant {
 
     // 对象的起始X坐标
     public int locationX;
@@ -19,6 +19,7 @@ public class BaseModel implements Plant{
 
     }
 
+    // 卡片放置区域的 mapIndex
     @Override
     public int getMapIndex() {
         return 0;

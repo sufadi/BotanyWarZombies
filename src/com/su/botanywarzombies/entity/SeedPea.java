@@ -55,7 +55,7 @@ public class SeedPea extends BaseModel implements TouchAble {
     // 请求安放一个卡片
     private void applyEmplacePea() {
         // 向 GameView图层加
-        GameView.getInstance().applyEmplacePea(locationX, locationY);
+        GameView.getInstance().applyEmplacePlant(locationX, locationY, this);
     }
 
 }

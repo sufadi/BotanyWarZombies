@@ -39,4 +39,9 @@ public class Config {
 
     // 记录每一个可安放区域的跑道Y坐标
     public static int[] racWayYpoint = new int[5];
+
+    public static final int TYPE_PEA = 0;
+
+    public static final int TYPE_FLOWER = 1;
+
 }

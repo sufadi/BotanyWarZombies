@@ -13,22 +13,22 @@ import com.su.botanywarzombies.view.GameView;
 /**
  * 安放状态的豌豆射手
  */
-public class EmplacePea extends BaseModel implements TouchAble {
+public class EmplaceFlower extends BaseModel implements TouchAble {
 
     // 触摸区域
     private Rect touchArea;
 
-    public EmplacePea(int locationX, int locationY) {
+    public EmplaceFlower(int locationX, int locationY) {
         this.locationX = locationX;
         this.locationY = locationY;
         this.isLive = true;
-        touchArea = new Rect(locationX, locationY, locationX + Config.peaFlames[0].getWidth(), locationY + Config.peaFlames[0].getHeight());
+        touchArea = new Rect(locationX, locationY, locationX + Config.flowerFlames[0].getWidth(), locationY + Config.flowerFlames[0].getHeight());
     }
 
     @Override
     public void drawSelf(Canvas canvas, Paint paint) {
         if (isLive) {
-            canvas.drawBitmap(Config.peaFlames[0], locationX, locationY, paint);
+            canvas.drawBitmap(Config.flowerFlames[0], locationX, locationY, paint);
         }
     }
 
@@ -54,7 +54,7 @@ public class EmplacePea extends BaseModel implements TouchAble {
                 // 对象标志位失效，即死亡对象
                 isLive = false;
 
-                GameView.getInstance().applay4Plant(locationX, locationY, Config.TYPE_PEA);
+                GameView.getInstance().applay4Plant(locationX, locationY, Config.TYPE_FLOWER);
                 break;
             default:
                 break;

@@ -12,7 +12,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.su.botanywarzombies.constant.Config;
+import com.su.botanywarzombies.entity.EmplaceFlower;
 import com.su.botanywarzombies.entity.EmplacePea;
+import com.su.botanywarzombies.entity.Flower;
 import com.su.botanywarzombies.entity.Pea;
 import com.su.botanywarzombies.entity.SeedFlower;
 import com.su.botanywarzombies.entity.SeedPea;
@@ -254,19 +256,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
         return gameView;
     }
 
-    public void applyEmplacePea(int locationX, int locationY) {
+    public void applyEmplacePlant(int locationX, int locationY, BaseModel mBaseModel) {
         synchronized (mSurfaceHolder) {
-            if (gameRunFlag) {
-
-            }
             // 顶层加入被安放状态的植物
-            Log.d("sufadi", "applyEmplacePea add EmplacePea");
-
-            gameLayout1.add(new EmplacePea(locationX, locationY));
+            // gameLayout1 表示正在安放植物的集合
+            // 安放状态下一次只能放一个植物
+            if (gameLayout1.size() < 1) {
+                if (mBaseModel instanceof SeedPea) {
+                    gameLayout1.add(new EmplacePea(locationX, locationY));
+                } else if (mBaseModel instanceof SeedFlower) {
+                    gameLayout1.add(new EmplaceFlower(locationX, locationY));
+                }
+            }
         }
     }
 
-    public void applay4Plant(int locationX, int locationY, EmplacePea emplacePea) {
+    public void applay4Plant(int locationX, int locationY, int type) {
         synchronized (mSurfaceHolder) {
             // 当前卡片中心坐标与可安放集合最近的坐标点
             for (Integer key : Config.plantPoint.keySet()) {
@@ -290,19 +295,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 
                     switch (raceIndex) {
                     case 0:
-                        gameLayout4plant0.add(new Pea(point.x, point.y, key));
+                        gameLayout4plant0.add(getPlant(point.x, point.y, key, type));
                         break;
                     case 1:
-                        gameLayout4plant1.add(new Pea(point.x, point.y, key));
+                        gameLayout4plant1.add(getPlant(point.x, point.y, key, type));
                         break;
                     case 2:
-                        gameLayout4plant2.add(new Pea(point.x, point.y, key));
+                        gameLayout4plant2.add(getPlant(point.x, point.y, key, type));
                         break;
                     case 3:
-                        gameLayout4plant3.add(new Pea(point.x, point.y, key));
+                        gameLayout4plant3.add(getPlant(point.x, point.y, key, type));
                         break;
                     case 4:
-                        gameLayout4plant4.add(new Pea(point.x, point.y, key));
+                        gameLayout4plant4.add(getPlant(point.x, point.y, key, type));
                         break;
 
                     default:
@@ -312,6 +317,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
             }
         }
 
+    }
+
+    private BaseModel getPlant(int locationX, int locationY, int key, int type) {
+        switch (type) {
+        case Config.TYPE_PEA:
+            return new Pea(locationX, locationY, key);
+        case Config.TYPE_FLOWER:
+            return new Flower(locationX, locationY, key);
+        default:
+            break;
+        }
+
+        return null;
     }
 
     private boolean isExist(int key, int raceIndex) {
@@ -343,4 +361,5 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 
         return false;
     }
+
 }
