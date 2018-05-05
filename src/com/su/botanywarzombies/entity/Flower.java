@@ -36,6 +36,7 @@ public class Flower extends BaseModel {
              */
             farmeIndex = (++farmeIndex) % 8;
 
+            // 每隔十秒产生一个小太阳
             if (System.currentTimeMillis() - lastBrithTime > TIME) {
                 lastBrithTime = System.currentTimeMillis();
                 creatSun(locationX, locationY);
