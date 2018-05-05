@@ -66,6 +66,14 @@ public class MainActivity extends Activity {
         Config.peaFlames[6] = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.p_2_07), seedPicWidth, seedPicHeight);
         Config.peaFlames[7] = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.p_2_08), seedPicWidth, seedPicHeight);
 
+        Config.zombieFlames[0] = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.z_1_01), seedPicWidth, seedPicHeight);
+        Config.zombieFlames[1] = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.z_1_02), seedPicWidth, seedPicHeight);
+        Config.zombieFlames[2] = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.z_1_03), seedPicWidth, seedPicHeight);
+        Config.zombieFlames[3] = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.z_1_04), seedPicWidth, seedPicHeight);
+        Config.zombieFlames[4] = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.z_1_05), seedPicWidth, seedPicHeight);
+        Config.zombieFlames[5] = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.z_1_06), seedPicWidth, seedPicHeight);
+        Config.zombieFlames[6] = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.z_1_07), seedPicWidth, seedPicHeight);
+
         mGameView = new GameView(this);
     }
 

@@ -19,6 +19,8 @@ import com.su.botanywarzombies.entity.Pea;
 import com.su.botanywarzombies.entity.SeedFlower;
 import com.su.botanywarzombies.entity.SeedPea;
 import com.su.botanywarzombies.entity.Sun;
+import com.su.botanywarzombies.entity.Zombie;
+import com.su.botanywarzombies.entity.ZombieManager;
 import com.su.botanywarzombies.model.BaseModel;
 import com.su.botanywarzombies.model.Plant;
 import com.su.botanywarzombies.model.TouchAble;
@@ -41,6 +43,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     // 放置死亡集合
     private ArrayList<BaseModel> deadList;
 
+    // 僵尸生成器
+    private ZombieManager mZombieManager;
+
     // 第一层图层
     private ArrayList<BaseModel> gameLayout1;
     // 第二层图层的集合
@@ -58,6 +63,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private ArrayList<BaseModel> gameLayout4plant3;
     // 安放植物 跑道5
     private ArrayList<BaseModel> gameLayout4plant4;
+
+    // 僵尸跑道
+    private ArrayList<BaseModel> gameLayout4zombie0;
+    private ArrayList<BaseModel> gameLayout4zombie1;
+    private ArrayList<BaseModel> gameLayout4zombie2;
+    private ArrayList<BaseModel> gameLayout4zombie3;
+    private ArrayList<BaseModel> gameLayout4zombie4;
 
     public GameView(Context context) {
         super(context);
@@ -94,6 +106,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
         gameLayout4plant3 = new ArrayList<BaseModel>();
         gameLayout4plant4 = new ArrayList<BaseModel>();
 
+        gameLayout4zombie0 = new ArrayList<BaseModel>();
+        gameLayout4zombie1 = new ArrayList<BaseModel>();
+        gameLayout4zombie2 = new ArrayList<BaseModel>();
+        gameLayout4zombie3 = new ArrayList<BaseModel>();
+        gameLayout4zombie4 = new ArrayList<BaseModel>();
+
         // 状态栏位置 + 一张图片宽度
         int statusX = (Config.screenWidth - Config.seekBank.getWidth()) / 2;
         int locationX = statusX + Config.seedFlower.getWidth();
@@ -104,6 +122,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
         locationX = locationX + Config.seedPea.getWidth();
         SeedPea seedPea = new SeedPea(locationX, 0);
         gameLayout2.add(seedPea);
+
+        Config.sunSizeX = statusX + 20;
+        Config.sunSizeY = Config.seekBank.getHeight() - 5;
 
         // 初始化可安放卡片的所有有效区域
         final int LINE = 5;
@@ -125,6 +146,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
             }
 
         }
+
+        mZombieManager = new ZombieManager();
     }
 
     @Override
@@ -198,6 +221,76 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
             }
         }
 
+        for (BaseModel model : gameLayout4plant0) {
+            if (!model.isLive) {
+                // 放置死亡的对象
+                deadList.add(model);
+            }
+        }
+
+        for (BaseModel model : gameLayout4plant1) {
+            if (!model.isLive) {
+                // 放置死亡的对象
+                deadList.add(model);
+            }
+        }
+
+        for (BaseModel model : gameLayout4plant2) {
+            if (!model.isLive) {
+                // 放置死亡的对象
+                deadList.add(model);
+            }
+        }
+
+        for (BaseModel model : gameLayout4plant3) {
+            if (!model.isLive) {
+                // 放置死亡的对象
+                deadList.add(model);
+            }
+        }
+
+        for (BaseModel model : gameLayout4plant4) {
+            if (!model.isLive) {
+                // 放置死亡的对象
+                deadList.add(model);
+            }
+        }
+
+        for (BaseModel model : gameLayout4zombie0) {
+            if (!model.isLive) {
+                // 放置死亡的对象
+                deadList.add(model);
+            }
+        }
+
+        for (BaseModel model : gameLayout4zombie1) {
+            if (!model.isLive) {
+                // 放置死亡的对象
+                deadList.add(model);
+            }
+        }
+
+        for (BaseModel model : gameLayout4zombie2) {
+            if (!model.isLive) {
+                // 放置死亡的对象
+                deadList.add(model);
+            }
+        }
+
+        for (BaseModel model : gameLayout4zombie3) {
+            if (!model.isLive) {
+                // 放置死亡的对象
+                deadList.add(model);
+            }
+        }
+
+        for (BaseModel model : gameLayout4zombie4) {
+            if (!model.isLive) {
+                // 放置死亡的对象
+                deadList.add(model);
+            }
+        }
+
         // 松开鼠标，无效对象消失
         for (BaseModel model : deadList) {
             if (!model.isLive) {
@@ -205,12 +298,29 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
                 gameLayout1.remove(model);
                 gameLayout2.remove(model);
                 gameLayout3.remove(model);
+
+                gameLayout4plant0.remove(model);
+                gameLayout4plant1.remove(model);
+                gameLayout4plant2.remove(model);
+                gameLayout4plant3.remove(model);
+                gameLayout4plant4.remove(model);
+
+                gameLayout4zombie0.remove(model);
+                gameLayout4zombie1.remove(model);
+                gameLayout4zombie2.remove(model);
+                gameLayout4zombie3.remove(model);
+                gameLayout4zombie4.remove(model);
             }
         }
 
     }
 
     private void onDrawing(Canvas mCanvas) {
+
+        // 定时生成僵尸
+        mZombieManager.drawSelf(mCanvas, mPaint);
+
+        mCanvas.drawText(String.valueOf(Config.sunSize), Config.sunSizeX, Config.sunSizeY, mPaint);
 
         for (BaseModel model : gameLayout4plant0) {
             model.drawSelf(mCanvas, mPaint);
@@ -229,6 +339,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
         }
 
         for (BaseModel model : gameLayout4plant4) {
+            model.drawSelf(mCanvas, mPaint);
+        }
+
+        for (BaseModel model : gameLayout4zombie0) {
+            model.drawSelf(mCanvas, mPaint);
+        }
+
+        for (BaseModel model : gameLayout4zombie1) {
+            model.drawSelf(mCanvas, mPaint);
+        }
+
+        for (BaseModel model : gameLayout4zombie2) {
+            model.drawSelf(mCanvas, mPaint);
+        }
+
+        for (BaseModel model : gameLayout4zombie3) {
+            model.drawSelf(mCanvas, mPaint);
+        }
+
+        for (BaseModel model : gameLayout4zombie4) {
             model.drawSelf(mCanvas, mPaint);
         }
 
@@ -400,6 +530,42 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
         // 阳光在第三图层
         synchronized (mSurfaceHolder) {
             gameLayout3.add(new Sun(locationX, locationY));
+        }
+    }
+
+    // 生产僵尸
+    public void apply4CreatZombie() {
+        synchronized (mSurfaceHolder) {
+            int raceWay = 0;
+            // 生成 0~4的跑道，向下强转取整
+            raceWay = (int) (Math.random() * 5);
+
+            switch (raceWay) {
+            case 0:
+                // Config.screenWidth + Config.zombieFlames[0].getWidth()
+                // 为了僵尸提前走
+                gameLayout4zombie0.add(new Zombie(Config.screenWidth + Config.zombieFlames[0].getWidth(), Config.racWayYpoint[0], raceWay));
+                break;
+            case 1:
+                gameLayout4zombie1.add(new Zombie(Config.screenWidth + Config.zombieFlames[0].getWidth(), Config.racWayYpoint[1], raceWay));
+
+                break;
+            case 2:
+                gameLayout4zombie2.add(new Zombie(Config.screenWidth + Config.zombieFlames[0].getWidth(), Config.racWayYpoint[2], raceWay));
+
+                break;
+            case 3:
+                gameLayout4zombie3.add(new Zombie(Config.screenWidth + Config.zombieFlames[0].getWidth(), Config.racWayYpoint[3], raceWay));
+
+                break;
+            case 4:
+                gameLayout4zombie4.add(new Zombie(Config.screenWidth + Config.zombieFlames[0].getWidth(), Config.racWayYpoint[4], raceWay));
+
+                break;
+
+            default:
+                break;
+            }
         }
     }
 

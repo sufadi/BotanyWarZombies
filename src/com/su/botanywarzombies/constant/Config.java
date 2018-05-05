@@ -37,6 +37,9 @@ public class Config {
     // 豌豆射手的图片数组
     public static Bitmap[] peaFlames = new Bitmap[8];
 
+    // 僵尸的图片数组
+    public static Bitmap[] zombieFlames = new Bitmap[8];
+
     // 植物可安放的坐标集合
     public static HashMap<Integer, Point> plantPoint = new HashMap<Integer, Point>();
 
@@ -51,4 +54,10 @@ public class Config {
 
     public static int sunDeadLocationY = 0;
 
+    // 小太阳的数字
+    public static int sunSize;
+
+    public static float sunSizeX;
+
+    public static float sunSizeY;
 }

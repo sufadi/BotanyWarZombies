@@ -62,6 +62,7 @@ public class Sun extends BaseModel implements TouchAble {
                     locationX = Config.sunDeadLocationX;
                     locationY = Config.sunDeadLocationY;
                     isLive = false;
+                    Config.sunSize = Config.sunSize + 25;
                 }
             } else if (mSunState == SunState.SHOW) {
                 // »√—Ùπ‚ TIME ∫Ûœ˚ ß
