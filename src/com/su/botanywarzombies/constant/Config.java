@@ -29,6 +29,9 @@ public class Config {
     // 豌豆射手
     public static Bitmap seedPea;
 
+    // 阳光
+    public static Bitmap sun;
+
     // 花的图片数组
     public static Bitmap[] flowerFlames = new Bitmap[8];
     // 豌豆射手的图片数组
@@ -43,5 +46,9 @@ public class Config {
     public static final int TYPE_PEA = 0;
 
     public static final int TYPE_FLOWER = 1;
+
+    public static int sunDeadLocationX;
+
+    public static int sunDeadLocationY = 0;
 
 }

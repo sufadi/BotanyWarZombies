@@ -5,6 +5,7 @@ import android.graphics.Paint;
 
 import com.su.botanywarzombies.constant.Config;
 import com.su.botanywarzombies.model.BaseModel;
+import com.su.botanywarzombies.view.GameView;
 
 public class Flower extends BaseModel {
 
@@ -12,11 +13,15 @@ public class Flower extends BaseModel {
     // 禁止一个位置放2个动画卡片
     private int mapIndex;
 
+    private long TIME = 10 * 1000;
+    private long lastBrithTime = 0l;
+
     public Flower(int locationX, int locationY, int mapIndex) {
         this.locationX = locationX;
         this.locationY = locationY;
         isLive = true;
         this.mapIndex = mapIndex;
+        lastBrithTime = System.currentTimeMillis();
     }
 
     @Override
@@ -30,11 +35,22 @@ public class Flower extends BaseModel {
              * farmeIndex = 0; }
              */
             farmeIndex = (++farmeIndex) % 8;
+
+            if (System.currentTimeMillis() - lastBrithTime > TIME) {
+                lastBrithTime = System.currentTimeMillis();
+                creatSun(locationX, locationY);
+
+            }
         }
     }
 
     @Override
     public int getMapIndex() {
         return mapIndex;
+    }
+
+    // 产生阳光
+    private void creatSun(int locationX, int locationY) {
+        GameView.getInstance().creatSun(locationX, locationY);
     }
 }

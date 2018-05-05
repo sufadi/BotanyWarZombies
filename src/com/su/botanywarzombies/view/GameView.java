@@ -18,6 +18,7 @@ import com.su.botanywarzombies.entity.Flower;
 import com.su.botanywarzombies.entity.Pea;
 import com.su.botanywarzombies.entity.SeedFlower;
 import com.su.botanywarzombies.entity.SeedPea;
+import com.su.botanywarzombies.entity.Sun;
 import com.su.botanywarzombies.model.BaseModel;
 import com.su.botanywarzombies.model.Plant;
 import com.su.botanywarzombies.model.TouchAble;
@@ -44,6 +45,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     private ArrayList<BaseModel> gameLayout1;
     // 第二层图层的集合
     private ArrayList<BaseModel> gameLayout2;
+    // 第三层图层的集合，冉冉升起的小太阳
+    private ArrayList<BaseModel> gameLayout3;
 
     // 安放植物 跑道1
     private ArrayList<BaseModel> gameLayout4plant0;
@@ -77,9 +80,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
     }
 
     private void creatElement() {
+        // 阳光收集的X坐标
+        Config.sunDeadLocationX = (Config.screenWidth - Config.seekBank.getWidth()) / 2;
+
         deadList = new ArrayList<BaseModel>();
         gameLayout2 = new ArrayList<BaseModel>();
         gameLayout1 = new ArrayList<BaseModel>();
+        gameLayout3 = new ArrayList<BaseModel>();
 
         gameLayout4plant0 = new ArrayList<BaseModel>();
         gameLayout4plant1 = new ArrayList<BaseModel>();
@@ -139,9 +146,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
                 try {
                     // 锁住画布才能绘图
                     mCanvas = mSurfaceHolder.lockCanvas();
+                    // 画背景图层
                     mCanvas.drawBitmap(Config.gameBg, 0, 0, mPaint);
+                    // 画状态栏卡片
                     // 放置卡片的起始 X 坐标是 (界面宽度-卡片宽度) / 2
-                    mCanvas.drawBitmap(Config.seekBank, (Config.screenWidth - Config.seekBank.getWidth()) / 2, 0, mPaint);
+                    mCanvas.drawBitmap(Config.seekBank, Config.sunDeadLocationX, Config.sunDeadLocationY, mPaint);
 
                     updateData();
                     onDrawing(mCanvas);
@@ -181,12 +190,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
             }
         }
 
+        // 移除到死亡的阳光
+        for (BaseModel model : gameLayout3) {
+            if (!model.isLive) {
+                // 放置死亡的对象
+                deadList.add(model);
+            }
+        }
+
         // 松开鼠标，无效对象消失
         for (BaseModel model : deadList) {
             if (!model.isLive) {
                 // 放置死亡的对象
                 gameLayout1.remove(model);
-                gameLayout1.remove(model);
+                gameLayout2.remove(model);
+                gameLayout3.remove(model);
             }
         }
 
@@ -211,6 +229,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
         }
 
         for (BaseModel model : gameLayout4plant4) {
+            model.drawSelf(mCanvas, mPaint);
+        }
+
+        // 第三图层，阳光
+        for (BaseModel model : gameLayout3) {
             model.drawSelf(mCanvas, mPaint);
         }
 
@@ -241,6 +264,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 
         // 第二图层，安放卡片
         for (BaseModel model : gameLayout2) {
+            if (model instanceof TouchAble) {
+                if (((TouchAble) model).onTouch(event)) {
+                    // true 表示触摸事件到此为止不再响应
+                    return true;
+                }
+            }
+        }
+
+        // 第三图层，添加小太阳
+        for (BaseModel model : gameLayout3) {
             if (model instanceof TouchAble) {
                 if (((TouchAble) model).onTouch(event)) {
                     // true 表示触摸事件到此为止不再响应
@@ -360,6 +393,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
         }
 
         return false;
+    }
+
+    // 生产阳光
+    public void creatSun(int locationX, int locationY) {
+        // 阳光在第三图层
+        synchronized (mSurfaceHolder) {
+            gameLayout3.add(new Sun(locationX, locationY));
+        }
     }
 
 }

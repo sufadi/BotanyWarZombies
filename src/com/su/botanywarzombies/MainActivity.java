@@ -42,8 +42,11 @@ public class MainActivity extends Activity {
 
         int seedPicWidth = Config.seekBank.getWidth() / 6;
         int seedPicHeight = Config.seekBank.getHeight();
+
+        // 图片不能等比缩放
         Config.seedFlower = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.seed_flower), seedPicWidth, seedPicHeight);
         Config.seedPea = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.seed_pea), seedPicWidth, seedPicHeight);
+        Config.sun = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.sun), seedPicWidth, seedPicHeight);
 
         Config.flowerFlames[0] = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.p_1_01), seedPicWidth, seedPicHeight);
         Config.flowerFlames[1] = DeviceTools.resizeBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.p_1_02), seedPicWidth, seedPicHeight);
