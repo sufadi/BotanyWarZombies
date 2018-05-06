@@ -24,4 +24,8 @@ public class BaseModel implements Plant {
     public int getMapIndex() {
         return 0;
     }
+
+    public int getModelWidth() {
+        return 0;
+    }
 }

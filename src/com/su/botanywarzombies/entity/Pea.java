@@ -37,4 +37,9 @@ public class Pea extends BaseModel {
     public int getMapIndex() {
         return mapIndex;
     }
+
+    @Override
+    public int getModelWidth() {
+        return Config.peaFlames[0].getWidth();
+    }
 }

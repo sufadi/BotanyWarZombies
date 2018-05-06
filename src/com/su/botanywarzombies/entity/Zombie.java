@@ -5,6 +5,7 @@ import android.graphics.Paint;
 
 import com.su.botanywarzombies.constant.Config;
 import com.su.botanywarzombies.model.BaseModel;
+import com.su.botanywarzombies.view.GameView;
 
 /**
  * Ω© ¨¿‡
@@ -34,6 +35,18 @@ public class Zombie extends BaseModel {
             farmeIndex = (++farmeIndex) % 7;
 
             locationX = locationX - seepX;
+
+            if (locationX < 0) {
+                isLive = false;
+            }
+
+            // Ω© ¨∑¢∆≈ˆ◊≤º‡≤‚
+            GameView.getInstance().checkCollision(this, raceWay);
         }
+    }
+
+    @Override
+    public int getModelWidth() {
+        return Config.zombieFlames[0].getWidth();
     }
 }
