@@ -167,7 +167,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
             // 这里需要考虑线程同步
             synchronized (mSurfaceHolder) {
                 try {
-                    // 锁住画布才能绘图
+                    // 锁住画布才能绘图，类似双缓冲
                     mCanvas = mSurfaceHolder.lockCanvas();
                     // 画背景图层
                     mCanvas.drawBitmap(Config.gameBg, 0, 0, mPaint);
